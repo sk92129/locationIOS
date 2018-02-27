@@ -12,17 +12,51 @@
 
 @end
 
-@implementation ViewController
+@implementation ViewController {
+    CLLocationManager *locationManager;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+
+    locationManager = [[CLLocationManager alloc] init];
 }
 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (IBAction)GetLocationClicked:(id)sender {
+    locationManager.delegate = self;
+    locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    
+    [locationManager startUpdatingLocation];
+    NSLog(@"clicked");
+
+}
+
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"didFailWithError: %@", error);
+    
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    NSLog(@"didUpdateToLocation: %@", newLocation);
+    CLLocation *currentLocation = newLocation;
+    
+    if (currentLocation != nil) {
+        _longitudeValue.text = [NSString stringWithFormat:@"%.8f",
+                               currentLocation.coordinate.longitude];
+        _latitudeValue.text = [NSString stringWithFormat:@"%.8f",
+                              currentLocation.coordinate.latitude];
+    }
 }
 
 
